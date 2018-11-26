@@ -61,37 +61,7 @@ namespace HiddenBlocks
                 Config.EnableHiddenBlocks = e;
                 Config.WritePending = true;
             });
-
-            var test1 = SettingsUI.CreateSubMenu("Test Submenu 1");
-            test1.AddInt("Test 1", 0, 100, 1);
-
-            var test2 = SettingsUI.CreateSubMenu("Test Submenu 2");
-            test1.AddInt("Test 2", 0, 100, 1);
-
-            var test3 = SettingsUI.CreateSubMenu("Test Submenu 3");
-            test1.AddInt("Test 3", 0, 100, 1);
-
-            var test4 = SettingsUI.CreateSubMenu("Test Submenu 4");
-            test1.AddInt("Test 4", 0, 100, 1);
-
-            var test5 = SettingsUI.CreateSubMenu("Test Submenu 5");
-            test1.AddInt("Test 5", 0, 100, 1);
-
-            var test6 = SettingsUI.CreateSubMenu("Test Submenu 6");
-            test1.AddInt("Test 6", 0, 100, 1);
-
-            var test7 = SettingsUI.CreateSubMenu("Test Submenu 7");
-            test1.AddInt("Test 7", 0, 100, 1);
-
-            var test8 = SettingsUI.CreateSubMenu("Test Submenu 8");
-            test1.AddInt("Test 8", 0, 100, 1);
-
-            var test9 = SettingsUI.CreateSubMenu("Test Submenu 9");
-            test1.AddInt("Test 9", 0, 100, 1);
-
-            var test10 = SettingsUI.CreateSubMenu("Test Submenu 10");
-            test1.AddInt("Test 10", 0, 100, 1);
-
+            
             Utilities.Log("Added mod menu button!");
         }
 
