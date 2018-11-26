@@ -12,97 +12,120 @@ using System.Reflection;
 using System.Net;
 using IllusionPlugin;
 using UnityEngine.UI;
+using CustomUI;
+using CustomUI.Settings;
+using CustomUI.GameplaySettings;
+using CustomUI.Utilities;
 
-
-namespace HiddenBlocks {
-    public class Plugin : IPlugin {
+namespace HiddenBlocks
+{
+    public class Plugin : IPlugin
+    {
         public string Name => "HiddenBlocks";
-        public string Version => "1.0.0";
+        public string Version => "1.2.0";
 
-        public static float blockHideDistance = 4.5f;
-        public static bool enableHiddenBlocks = true;
-        public static bool shouldWriteConfig = false;
-        
-        private GameOptionToggle _hiddenBlocksToggle = null;
-        private GameHooks _hiddenMod;
-        
-        public void OnApplicationStart() {
-            this._hiddenMod = new GameObject().AddComponent<GameHooks>();
+        public static Plugin Instance;
+        public static bool NegativeNoteJumpSpeed = false;
+
+        private Sprite _hiddenBlocksIcon = null;
+        private GameHooks _gameHooks = null;
+
+        public void OnApplicationStart()
+        {
+            Instance = this;
+
+            _gameHooks = new GameObject().AddComponent<GameHooks>();
+            Config.Read();
+            Config.Write();
 
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-            
-            // Initialize our settings from modprefs.ini
-            ReadConfig();
-            WriteConfig();
         }
 
-        private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene) {
-            // Setup our custom toggle
-            if (scene.name == "Menu") {
+        private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
+        {
+            //if (scene.name.Contains("Environment")) 
+            //    NegativeNoteJumpSpeed = _mainGameSceneSetupData.difficultyLevel.noteJumpMovementSpeed < 0;
+        }
+
+        public void AddModMenuButton()
+        {
+            if (_hiddenBlocksIcon == null)
+                _hiddenBlocksIcon = UIUtilities.LoadSpriteFromResources("HiddenBlocks.Resources.HiddenIcon.png");
+
+            var toggle = GameplaySettingsUI.CreateToggleOption("Hidden Blocks", "Makes notes and bombs invisible as they approach your position.", _hiddenBlocksIcon);
+            toggle.GetValue = Config.EnableHiddenBlocks;
+            toggle.OnToggle += ((bool e) =>
+            {
+                Utilities.Log(e ? "Enabled" : "Disabled");
+                Config.EnableHiddenBlocks = e;
+                Config.WritePending = true;
+            });
+
+            var test1 = SettingsUI.CreateSubMenu("Test Submenu 1");
+            test1.AddInt("Test 1", 0, 100, 1);
+
+            var test2 = SettingsUI.CreateSubMenu("Test Submenu 2");
+            test1.AddInt("Test 2", 0, 100, 1);
+
+            var test3 = SettingsUI.CreateSubMenu("Test Submenu 3");
+            test1.AddInt("Test 3", 0, 100, 1);
+
+            var test4 = SettingsUI.CreateSubMenu("Test Submenu 4");
+            test1.AddInt("Test 4", 0, 100, 1);
+
+            var test5 = SettingsUI.CreateSubMenu("Test Submenu 5");
+            test1.AddInt("Test 5", 0, 100, 1);
+
+            var test6 = SettingsUI.CreateSubMenu("Test Submenu 6");
+            test1.AddInt("Test 6", 0, 100, 1);
+
+            var test7 = SettingsUI.CreateSubMenu("Test Submenu 7");
+            test1.AddInt("Test 7", 0, 100, 1);
+
+            var test8 = SettingsUI.CreateSubMenu("Test Submenu 8");
+            test1.AddInt("Test 8", 0, 100, 1);
+
+            var test9 = SettingsUI.CreateSubMenu("Test Submenu 9");
+            test1.AddInt("Test 9", 0, 100, 1);
+
+            var test10 = SettingsUI.CreateSubMenu("Test Submenu 10");
+            test1.AddInt("Test 10", 0, 100, 1);
+
+            Utilities.Log("Added mod menu button!");
+        }
+
+
+        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            if (arg0.name == "Menu")
                 AddModMenuButton();
-            }
-
-           Utilities.Log($"Scene: {scene.name} has index {scene.buildIndex}");
         }
 
-        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1) {
-
-        }
-
-        public void OnApplicationQuit() {
+        public void OnApplicationQuit()
+        {
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
         }
 
-        public void OnLevelWasLoaded(int level) {
+        public void OnLevelWasLoaded(int level)
+        {
         }
 
-        public void OnLevelWasInitialized(int level) {
+        public void OnLevelWasInitialized(int level)
+        {
         }
-        
-        public void OnUpdate() {
-            // If the user toggled hidden blocks on/off in the menu, update it in the config file.
-            if (shouldWriteConfig) {
-                WriteConfig();
+
+        public void OnUpdate()
+        {
+            if (Config.WritePending)
+            {
+                Config.Write();
             }
         }
 
-        public void OnFixedUpdate() {
-        }
-
-        public void AddModMenuButton() {
-            Sprite hiddenBlocksIcon = Utilities.LoadNewSprite(BuiltInResources.HiddenBlocksIcon);
-
-            MainMenuViewController _mainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().First();
-            GameplayOptionsViewController _gameplayOptionsViewController = Resources.FindObjectsOfTypeAll<GameplayOptionsViewController>().First();
-            Transform switches = _gameplayOptionsViewController.transform.Cast<RectTransform>().ToArray().ToList().FirstOrDefault(c => c.name == "Switches");
-            _gameplayOptionsViewController.transform.Find("InfoText").gameObject.SetActive(false);
-            RectTransform container = (RectTransform)switches.transform.Find("Container");
-            //container.sizeDelta = new Vector2(container.sizeDelta.x, container.sizeDelta.y + 14f);
-            //container.Translate(new Vector3(0, -0.1f, 0));
-            Transform noEnergy = switches.transform.GetComponentsInChildren<Component>().ToList().FirstOrDefault(comp => comp.name == "NoEnergy").transform;  //container.Find("NoEnergy");
-
-            _hiddenBlocksToggle = new GameOptionToggle(container.gameObject, noEnergy.gameObject, "HiddenBlocks", hiddenBlocksIcon, "Hidden Blocks", enableHiddenBlocks);
-        }
-
-        private void ReadConfig() {
-            // Read our config options, if they already exist
-            enableHiddenBlocks = ModPrefs.GetBool(Name, "Enabled", true);
-            blockHideDistance = ModPrefs.GetFloat(Name, "BlockHideDistance", 4.5f);
-
-            // Don't allow the user to set lower values, as it can be used to gain an unfair advantage by seeing through notes
-            if (blockHideDistance < 4.5f) {
-                blockHideDistance = 4.5f;
-            }
-        }
-
-        private void WriteConfig() {
-            // Write the updated values to the config file in case we haven't already
-            ModPrefs.SetBool(Name, "Enabled", enableHiddenBlocks);
-            ModPrefs.SetFloat(Name, "BlockHideDistance", blockHideDistance);
-
-            shouldWriteConfig = false;
+        public void OnFixedUpdate()
+        {
         }
     }
 }

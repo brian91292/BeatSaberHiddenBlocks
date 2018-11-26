@@ -40,6 +40,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="BeatSaberCustomUI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BeatSaber-CustomUI\bin\Debug\BeatSaberCustomUI.dll</HintPath>
+    </Reference>
     <Reference Include="IllusionPlugin">
       <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionPlugin.dll</HintPath>
     </Reference>
@@ -82,15 +86,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HiddenNote.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="HiddenBlock.cs" />
     <Compile Include="HookManager.cs" />
     <Compile Include="GameHooks.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\BuiltInResources.cs" />
-    <Compile Include="UI\GameOptionToggle.cs" />
     <Compile Include="UI\NGUIUtil.cs" />
     <Compile Include="Utilities.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\HiddenIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(TargetDir)$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
