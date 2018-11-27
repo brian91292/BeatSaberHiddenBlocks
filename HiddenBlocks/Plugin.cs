@@ -16,19 +16,21 @@ using CustomUI;
 using CustomUI.Settings;
 using CustomUI.GameplaySettings;
 using CustomUI.Utilities;
+using CustomUI.MenuButton;
 
 namespace HiddenBlocks
 {
     public class Plugin : IPlugin
     {
         public string Name => "HiddenBlocks";
-        public string Version => "1.2.0";
+        public string Version => "1.2.1";
 
         public static Plugin Instance;
         public static bool NegativeNoteJumpSpeed = false;
 
         private Sprite _hiddenBlocksIcon = null;
         private GameHooks _gameHooks = null;
+        private StandardLevelSceneSetupDataSO _mainGameSceneSetupData = null;
 
         public void OnApplicationStart()
         {
@@ -44,8 +46,8 @@ namespace HiddenBlocks
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            //if (scene.name.Contains("Environment")) 
-            //    NegativeNoteJumpSpeed = _mainGameSceneSetupData.difficultyLevel.noteJumpMovementSpeed < 0;
+            if (scene.name == "GameCore") 
+                NegativeNoteJumpSpeed = _mainGameSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed < 0;
         }
 
         public void AddModMenuButton()
@@ -61,7 +63,7 @@ namespace HiddenBlocks
                 Config.EnableHiddenBlocks = e;
                 Config.WritePending = true;
             });
-            
+
             Utilities.Log("Added mod menu button!");
         }
 
@@ -92,6 +94,9 @@ namespace HiddenBlocks
             {
                 Config.Write();
             }
+
+            if (_mainGameSceneSetupData == null)
+                _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().FirstOrDefault();
         }
 
         public void OnFixedUpdate()
