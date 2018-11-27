@@ -1,4 +1,4 @@
-# HiddenBlocks v1.0.0
+# Mod Info
 Based off the popular HD mod for osu, HiddenBlocks makes any notes/bombs disappear when they come within range of your player. A video of the mod in action can be seen here: https://www.youtube.com/watch?v=19fxxnjHvVo&t=2s
 
 # Usage
