@@ -60,8 +60,8 @@ namespace HiddenBlocks
                 _hiddenBlocksIcon = UIUtilities.LoadSpriteFromResources("HiddenBlocks.Resources.HiddenIcon.png");
             
             var toggle = GameplaySettingsUI.CreateToggleOption("Hidden Blocks", "Makes notes and bombs invisible as they approach your position.", _hiddenBlocksIcon);
-            toggle.AddConflict("DisappearingArrows");
-            
+            toggle.AddConflict("Disappearing Arrows");
+
             toggle.GetValue = Config.EnableHiddenBlocks;
             toggle.OnToggle += ((bool e) =>
             {
