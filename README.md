@@ -1,4 +1,4 @@
-# HiddenBlocks v1.0.0
+# Mod Info
 Based off the popular HD mod for osu, HiddenBlocks makes any notes/bombs disappear when they come within range of your player. A video of the mod in action can be seen here: https://www.youtube.com/watch?v=19fxxnjHvVo&t=2s
 
 # Usage
@@ -9,3 +9,6 @@ To configure the range at which blocks disappear, just change the BlockHideDista
 
 # Leaderboards
 The HiddenBlocks mod utilizes its own leaderboard, so any scores you see on the leaderboard when you have HiddenBlocks enabled are other players who are using the mod. This is not a bug, this is intended!
+
+# Download
+[Click here to download the latest HiddenBlocks.dll](https://github.com/brian91292/BeatSaberHiddenBlocks/releases/latest)
