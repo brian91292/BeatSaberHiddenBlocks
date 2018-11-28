@@ -23,7 +23,7 @@ namespace HiddenBlocks
     public class Plugin : IPlugin
     {
         public string Name => "HiddenBlocks";
-        public string Version => "1.2.1";
+        public string Version => "1.2.2";
 
         public static Plugin Instance;
         public static bool NegativeNoteJumpSpeed = false;
