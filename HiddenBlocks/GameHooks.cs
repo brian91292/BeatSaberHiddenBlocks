@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Reflection;
 using UnityEngine;
 using System.Diagnostics;
+using CustomUI.Utilities;
 
 namespace HiddenBlocks
 {
@@ -34,7 +35,7 @@ namespace HiddenBlocks
             this.hookManager = new HookManager();
             this.hooks = new Dictionary<string, MethodInfo>();
             
-            this.Hook("BeatmapObjectSpawnController", typeof(BeatmapObjectSpawnController).GetMethod("SetNoteControllerEventCallbacks"), typeof(BeatmapObjectSpawnControllerDetours).GetMethod("SetNoteControllerEventCallbacks"));
+            this.Hook("SetNoteControllerEventCallbacks", typeof(BeatmapObjectSpawnController).GetMethod("SetNoteControllerEventCallbacks"), typeof(BeatmapObjectSpawnControllerDetours).GetMethod("SetNoteControllerEventCallbacks"));
         }
 
         private void OnDestroy()

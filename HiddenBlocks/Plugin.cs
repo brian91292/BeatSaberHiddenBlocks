@@ -13,10 +13,10 @@ using System.Net;
 using IllusionPlugin;
 using UnityEngine.UI;
 using CustomUI;
-using CustomUI.Settings;
 using CustomUI.GameplaySettings;
 using CustomUI.Utilities;
 using CustomUI.MenuButton;
+using CustomUI.Settings;
 
 namespace HiddenBlocks
 {
@@ -46,16 +46,22 @@ namespace HiddenBlocks
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.name == "GameCore") 
+            if (scene.name == "GameCore")
+            {
                 NegativeNoteJumpSpeed = _mainGameSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed < 0;
+            }
         }
+
+
 
         public void AddModMenuButton()
         {
             if (_hiddenBlocksIcon == null)
                 _hiddenBlocksIcon = UIUtilities.LoadSpriteFromResources("HiddenBlocks.Resources.HiddenIcon.png");
-
+            
             var toggle = GameplaySettingsUI.CreateToggleOption("Hidden Blocks", "Makes notes and bombs invisible as they approach your position.", _hiddenBlocksIcon);
+            toggle.AddConflict("DisappearingArrows");
+            
             toggle.GetValue = Config.EnableHiddenBlocks;
             toggle.OnToggle += ((bool e) =>
             {
@@ -64,9 +70,9 @@ namespace HiddenBlocks
                 Config.WritePending = true;
             });
 
-            Utilities.Log("Added mod menu button!");
+            Utilities.Log("Added test button!");
         }
-
+        
 
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
