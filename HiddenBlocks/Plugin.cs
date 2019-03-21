@@ -17,28 +17,35 @@ using CustomUI.GameplaySettings;
 using CustomUI.Utilities;
 using CustomUI.MenuButton;
 using CustomUI.Settings;
+using Harmony;
+using CustomUI.BeatSaber;
+using HMUI;
+using static VRUI.FlowCoordinator;
+using IllusionInjector;
+using VRUI;
 
 namespace HiddenBlocks
 {
     public class Plugin : IPlugin
     {
         public string Name => "HiddenBlocks";
-        public string Version => "1.2.2";
+        public string Version => "1.2.3";
 
         public static Plugin Instance;
         public static bool NegativeNoteJumpSpeed = false;
 
         private Sprite _hiddenBlocksIcon = null;
-        private GameHooks _gameHooks = null;
-        private StandardLevelSceneSetupDataSO _mainGameSceneSetupData = null;
+        private HarmonyInstance _harmony;
 
         public void OnApplicationStart()
         {
             Instance = this;
 
-            _gameHooks = new GameObject().AddComponent<GameHooks>();
             Config.Read();
             Config.Write();
+
+            _harmony = HarmonyInstance.Create("com.brian91292.beatsaber.hiddenblocks");
+            _harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
@@ -48,18 +55,22 @@ namespace HiddenBlocks
         {
             if (scene.name == "GameCore")
             {
-                NegativeNoteJumpSpeed = _mainGameSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed < 0;
+                NegativeNoteJumpSpeed = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed < 0;
             }
         }
 
-
+        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            if (arg0.name == "MenuCore")
+                AddModMenuButton();
+        }
 
         public void AddModMenuButton()
         {
             if (_hiddenBlocksIcon == null)
                 _hiddenBlocksIcon = UIUtilities.LoadSpriteFromResources("HiddenBlocks.Resources.HiddenIcon.png");
-            
-            var toggle = GameplaySettingsUI.CreateToggleOption("Hidden Blocks", "Makes notes and bombs invisible as they approach your position.", _hiddenBlocksIcon);
+
+            var toggle = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersLeft, "Hidden Blocks", "Makes notes and bombs invisible as they approach your position.", UIUtilities.EditIcon);
             toggle.AddConflict("Disappearing Arrows");
 
             toggle.GetValue = Config.EnableHiddenBlocks;
@@ -69,19 +80,12 @@ namespace HiddenBlocks
                 Config.EnableHiddenBlocks = e;
                 Config.WritePending = true;
             });
-
-            Utilities.Log("Added test button!");
         }
         
-
-        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
-        {
-            if (arg0.name == "Menu")
-                AddModMenuButton();
-        }
-
         public void OnApplicationQuit()
         {
+            _harmony.UnpatchAll("com.brian91292.beatsaber.hiddenblocks");
+
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
         }
@@ -100,9 +104,6 @@ namespace HiddenBlocks
             {
                 Config.Write();
             }
-
-            if (_mainGameSceneSetupData == null)
-                _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().FirstOrDefault();
         }
 
         public void OnFixedUpdate()
