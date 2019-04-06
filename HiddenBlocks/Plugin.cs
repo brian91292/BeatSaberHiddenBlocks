@@ -29,7 +29,7 @@ namespace HiddenBlocks
     public class Plugin : IPlugin
     {
         public string Name => "HiddenBlocks";
-        public string Version => "1.2.3";
+        public string Version => "1.2.4";
 
         public static Plugin Instance;
         public static bool NegativeNoteJumpSpeed = false;
@@ -72,6 +72,7 @@ namespace HiddenBlocks
 
             var toggle = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersLeft, "Hidden Blocks", "Makes notes and bombs invisible as they approach your position.", UIUtilities.EditIcon);
             toggle.AddConflict("Disappearing Arrows");
+            toggle.AddConflict("Ghost Notes");
 
             toggle.GetValue = Config.EnableHiddenBlocks;
             toggle.OnToggle += ((bool e) =>
